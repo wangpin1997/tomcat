@@ -16,27 +16,31 @@
  */
 package org.apache.coyote;
 
+import org.apache.tomcat.util.net.SSLHostConfig;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.apache.tomcat.util.net.SSLHostConfig;
-
 /**
  * Abstract the protocol implementation, including threading, etc.
- *
+ * <p>
  * This is the main interface to be implemented by a coyote protocol.
  * Adapter is the main interface to be implemented by a coyote servlet
  * container.
+ * <p>
+ * 协议处理器
  *
  * @author Remy Maucherat
  * @author Costin Manolache
  * @see Adapter
  */
+
 public interface ProtocolHandler {
 
     /**
      * Return the adapter associated with the protocol handler.
+     *
      * @return the adapter
      */
     public Adapter getAdapter();
@@ -60,6 +64,7 @@ public interface ProtocolHandler {
 
     /**
      * Set the optional executor that will be used by the connector.
+     *
      * @param executor the executor
      */
     public void setExecutor(Executor executor);
@@ -67,6 +72,7 @@ public interface ProtocolHandler {
 
     /**
      * Get the utility executor that should be used by the protocol handler.
+     *
      * @return the executor
      */
     public ScheduledExecutorService getUtilityExecutor();
@@ -74,6 +80,7 @@ public interface ProtocolHandler {
 
     /**
      * Set the utility executor that should be used by the protocol handler.
+     *
      * @param utilityExecutor the executor
      */
     public void setUtilityExecutor(ScheduledExecutorService utilityExecutor);
@@ -140,9 +147,8 @@ public interface ProtocolHandler {
      * method will return when all of the client connections have closed or the
      * method has been waiting for {@code waitTimeMillis}.
      *
-     * @param waitMillis    The maximum time to wait in milliseconds for the
-     *                      client connections to close.
-     *
+     * @param waitMillis The maximum time to wait in milliseconds for the
+     *                   client connections to close.
      * @return The wait time, if any remaining when the method returned
      */
     public long awaitConnectionsClose(long waitMillis);
@@ -152,7 +158,7 @@ public interface ProtocolHandler {
      * Requires APR/native library
      *
      * @return <code>true</code> if this Protocol Handler requires the
-     *         APR/native library, otherwise <code>false</code>
+     * APR/native library, otherwise <code>false</code>
      */
     public boolean isAprRequired();
 
@@ -161,13 +167,14 @@ public interface ProtocolHandler {
      * Does this ProtocolHandler support sendfile?
      *
      * @return <code>true</code> if this Protocol Handler supports sendfile,
-     *         otherwise <code>false</code>
+     * otherwise <code>false</code>
      */
     public boolean isSendfileSupported();
 
 
     /**
      * Add a new SSL configuration for a virtual host.
+     *
      * @param sslHostConfig the configuration
      */
     public void addSslHostConfig(SSLHostConfig sslHostConfig);
@@ -176,6 +183,7 @@ public interface ProtocolHandler {
     /**
      * Find all configured SSL virtual host configurations which will be used
      * by SNI.
+     *
      * @return the configurations
      */
     public SSLHostConfig[] findSslHostConfigs();
@@ -183,6 +191,7 @@ public interface ProtocolHandler {
 
     /**
      * Add a new protocol for used by HTTP/1.1 upgrade or ALPN.
+     *
      * @param upgradeProtocol the protocol
      */
     public void addUpgradeProtocol(UpgradeProtocol upgradeProtocol);
@@ -190,6 +199,7 @@ public interface ProtocolHandler {
 
     /**
      * Return all configured upgrade protocols.
+     *
      * @return the protocols
      */
     public UpgradeProtocol[] findUpgradeProtocols();
@@ -199,6 +209,7 @@ public interface ProtocolHandler {
      * Some protocols, like AJP, have a packet length that
      * shouldn't be exceeded, and this can be used to adjust the buffering
      * used by the application layer.
+     *
      * @return the desired buffer size, or -1 if not relevant
      */
     public default int getDesiredBufferSize() {
@@ -208,16 +219,17 @@ public interface ProtocolHandler {
 
     /**
      * Create a new ProtocolHandler for the given protocol.
+     *
      * @param protocol the protocol
-     * @param apr if <code>true</code> the APR protcol handler will be used
+     * @param apr      if <code>true</code> the APR protcol handler will be used
      * @return the newly instantiated protocol handler
-     * @throws ClassNotFoundException Specified protocol was not found
-     * @throws InstantiationException Specified protocol could not be instantiated
-     * @throws IllegalAccessException Exception occurred
-     * @throws IllegalArgumentException Exception occurred
+     * @throws ClassNotFoundException    Specified protocol was not found
+     * @throws InstantiationException    Specified protocol could not be instantiated
+     * @throws IllegalAccessException    Exception occurred
+     * @throws IllegalArgumentException  Exception occurred
      * @throws InvocationTargetException Exception occurred
-     * @throws NoSuchMethodException Exception occurred
-     * @throws SecurityException Exception occurred
+     * @throws NoSuchMethodException     Exception occurred
+     * @throws SecurityException         Exception occurred
      */
     public static ProtocolHandler create(String protocol, boolean apr)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException,
